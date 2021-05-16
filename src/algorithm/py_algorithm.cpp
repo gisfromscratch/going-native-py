@@ -14,13 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
+#include "py_algorithm.hpp"
 
 #include <pybind11/pybind11.h>
+#include <pybind11/chrono.h>
 #include <pybind11/stl.h>
 
 namespace py = pybind11;
 
 using namespace std;
+using namespace std::chrono;
 
 template<typename T>
 int py_count(const vector<T>& values, T value)
@@ -35,5 +38,7 @@ PYBIND11_MODULE(algorithm, m) {
     m.def("count", &py_count<float>, "Returns the number of floats satisfying the specific float.", 
         py::arg("values"), py::arg("value"));
     m.def("count", &py_count<string>, "Returns the number of strings satisfying the specific string.", 
+        py::arg("values"), py::arg("value"));
+    m.def("count", &py_count<system_clock::time_point>, "Returns the number of dates satisfying the specific date.", 
         py::arg("values"), py::arg("value"));
 }
