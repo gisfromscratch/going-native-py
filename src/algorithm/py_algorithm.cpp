@@ -22,13 +22,18 @@ namespace py = pybind11;
 
 using namespace std;
 
-int py_count(const vector<int>& integers, int value)
+template<typename T>
+int py_count(const vector<T>& values, T value)
 {
-    return count(integers.begin(), integers.end(), value);
+    return count(values.begin(), values.end(), value);
 }
 
 PYBIND11_MODULE(algorithm, m) {
     m.doc() = "Offers access to the STL algorithms."; // optional module docstring
-    m.def("count_int", &py_count, "Returns the number of integers satisfying the specific integer.", 
-        py::arg("integers"), py::arg("value"));
+    m.def("count", &py_count<int>, "Returns the number of integers satisfying the specific integer.", 
+        py::arg("values"), py::arg("value"));
+    m.def("count", &py_count<float>, "Returns the number of floats satisfying the specific float.", 
+        py::arg("values"), py::arg("value"));
+    m.def("count", &py_count<string>, "Returns the number of strings satisfying the specific string.", 
+        py::arg("values"), py::arg("value"));
 }

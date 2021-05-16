@@ -19,6 +19,7 @@
 #define ALGORITHM_H
 
 #include <algorithm>
+#include <string>
 #include <vector>
 
 #endif
