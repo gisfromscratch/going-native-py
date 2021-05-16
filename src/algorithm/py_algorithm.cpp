@@ -16,10 +16,19 @@
 // 
 
 #include <pybind11/pybind11.h>
-#include <pybind11/embed.h>
+#include <pybind11/stl.h>
 
 namespace py = pybind11;
 
+using namespace std;
+
+int py_count(const vector<int>& integers, int value)
+{
+    return count(integers.begin(), integers.end(), value);
+}
+
 PYBIND11_MODULE(algorithm, m) {
     m.doc() = "Offers access to the STL algorithms."; // optional module docstring
+    m.def("count_int", &py_count, "Returns the number of integers satisfying the specific integer.", 
+        py::arg("integers"), py::arg("value"));
 }
