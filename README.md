@@ -4,7 +4,7 @@ This is just a get your hands dirty approach and should be useful for any develo
 
 # Features
 The following algorithms are offered to Python:
-- std::count<int, float, string>
+- std::count<int, float, string, time_point>
 
 ## Requirements
 For building python modules from C++ the awesome [pybind11](https://github.com/pybind/pybind11) library is used.
