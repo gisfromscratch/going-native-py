@@ -13,3 +13,6 @@ The functions expect array/list values not being ```nan```. When using pandas da
 For building python modules from C++ the awesome [pybind11](https://github.com/pybind/pybind11) library is used.
 The build system relies on [CMake](https://cmake.org/). During configure each C++ module copies the compiled libraries into the test folder.
 The test folder contains the unit tests which are only based on Python.
+
+## Contributing
+Contributions are welcome from anyone and everyone. Please see our [guidelines](CONTRIBUTING.md).
