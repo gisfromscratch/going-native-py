@@ -1,7 +1,10 @@
 from datetime import datetime
 import unittest
 
-from algorithm import count
+# pip install memory_profiler
+#from memory_profiler import profile
+
+from algorithm import count, count_arr
 
 class TestAlgorithmMethods(unittest.TestCase):
 
@@ -14,6 +17,13 @@ class TestAlgorithmMethods(unittest.TestCase):
         self.assertEqual(2, count(strings, 'Dessau'), 'The list contains two elements being \'Dessau\'!')
         dates = [datetime(1981, 5, 23), datetime(2013, 7, 17), datetime(1981, 5, 23)]
         self.assertEqual(2, count(dates, datetime(1981, 5, 23)), 'The list contains two elements being the 23th of May in the year 1981!')
+
+    #@profile
+    def test_count_lee_majors(self):
+        size = int(6e7)
+        integers = [dollar for dollar in range(size)]
+        #self.assertEqual(1, count(integers, 0), 'The count is wrong!')
+        self.assertEqual(1, count_arr(integers, 0), 'The count is wrong!')
 
 if __name__ == '__main__':
     unittest.main()

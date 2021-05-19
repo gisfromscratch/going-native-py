@@ -18,6 +18,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/chrono.h>
+#include <pybind11/numpy.h>
 #include <pybind11/stl.h>
 
 namespace py = pybind11;
@@ -31,6 +32,21 @@ int py_count(const vector<T>& values, T value)
     return count(values.begin(), values.end(), value);
 }
 
+template<typename T>
+int py_count_arr(const py::array_t<T>& values, T value)
+{
+    auto buffer_info = values.request();
+    if (buffer_info.ndim != 1)
+        throw runtime_error("Only one dimensional arrays are supported!");
+
+    T* raw_values = static_cast<T*>(buffer_info.ptr);
+    vector<T> vec_values;
+    vec_values.reserve(buffer_info.size);
+    vec_values.insert(vec_values.end(), &raw_values[0], &raw_values[buffer_info.size]);
+
+    return count(vec_values.begin(), vec_values.end(), value);
+}
+
 PYBIND11_MODULE(algorithm, m) {
     m.doc() = "Offers access to the STL algorithms."; // optional module docstring
     m.def("count", &py_count<int>, "Returns the number of integers satisfying the specific integer.", 
@@ -40,5 +56,7 @@ PYBIND11_MODULE(algorithm, m) {
     m.def("count", &py_count<string>, "Returns the number of strings satisfying the specific string.", 
         py::arg("values"), py::arg("value"));
     m.def("count", &py_count<system_clock::time_point>, "Returns the number of dates satisfying the specific date.", 
+        py::arg("values"), py::arg("value"));
+    m.def("count_arr", &py_count_arr<int>, "Returns the number of integers satisfying the specific integer.", 
         py::arg("values"), py::arg("value"));
 }
