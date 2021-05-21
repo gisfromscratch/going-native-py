@@ -63,6 +63,40 @@ int py_count_arr(const py::array_t<T>& values, T value)
     return count(vec_values.begin(), vec_values.end(), value);
 }
 
+template<typename T>
+int py_count_if_lt(const vector<T>& values, T value)
+{
+    return count_if(values.begin(), values.end(), [&] (const T& entry) {
+        return entry < value;
+    });
+}
+
+template<typename T>
+int py_count_if_lteq(const vector<T>& values, T value)
+{
+    return count_if(values.begin(), values.end(), [&] (const T& entry) {
+        return entry <= value;
+    });
+}
+
+template<typename T>
+int py_count_if_gt(const vector<T>& values, T value)
+{
+    return count_if(values.begin(), values.end(), [&] (const T& entry) {
+        return entry > value;
+    });
+}
+
+template<typename T>
+int py_count_if_gteq(const vector<T>& values, T value)
+{
+    return count_if(values.begin(), values.end(), [&] (const T& entry) {
+        return entry >= value;
+    });
+}
+
+
+
 PYBIND11_MODULE(algorithm, m) {
     m.doc() = "Offers access to the STL algorithms."; // optional module docstring
     m.def("count", &py_count<int>, "Returns the number of integers satisfying the specific integer.", 
@@ -74,5 +108,13 @@ PYBIND11_MODULE(algorithm, m) {
     m.def("count", &py_count<system_clock::time_point>, "Returns the number of dates satisfying the specific date.", 
         py::arg("values"), py::arg("value"));
     m.def("count_arr", &py_count_arr<int>, "Returns the number of integers satisfying the specific integer.", 
+        py::arg("values"), py::arg("value"));
+    m.def("count_lt", &py_count_if_lt<int>, "Returns the number of integers being less than the specific integer.", 
+        py::arg("values"), py::arg("value"));
+    m.def("count_lt", &py_count_if_lt<float>, "Returns the number of floats being less than the specific float.", 
+        py::arg("values"), py::arg("value"));
+    m.def("count_lt", &py_count_if_lt<string>, "Returns the number of strings being less than the specific string.", 
+        py::arg("values"), py::arg("value"));
+    m.def("count_lt", &py_count_if_lt<system_clock::time_point>, "Returns the number of dates being less than the specific date.", 
         py::arg("values"), py::arg("value"));
 }
