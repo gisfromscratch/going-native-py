@@ -22,8 +22,8 @@ class TestAlgorithmMethods(unittest.TestCase):
     def test_count_lee_majors(self):
         size = int(6e7)
         integers = [dollar for dollar in range(size)]
-        #self.assertEqual(1, count(integers, 0), 'The count is wrong!')
-        self.assertEqual(1, count_arr(integers, 0), 'The count is wrong!')
+        self.assertEqual(1, count(integers, 0), 'The count is wrong!')
+        #self.assertEqual(1, count_arr(integers, 0), 'The count is wrong!')
 
 if __name__ == '__main__':
     unittest.main()

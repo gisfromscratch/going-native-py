@@ -40,6 +40,22 @@ int py_count_arr(const py::array_t<T>& values, T value)
         throw runtime_error("Only one dimensional arrays are supported!");
 
     T* raw_values = static_cast<T*>(buffer_info.ptr);
+
+    // Raw style
+    /*
+    int count = 0;
+    for (int index = 0, size = buffer_info.size; index < size; index++)
+    {
+        if (value == raw_values[index])
+        {
+            count++;
+        }
+    }
+
+    return count;
+    */
+
+    // STL style
     vector<T> vec_values;
     vec_values.reserve(buffer_info.size);
     vec_values.insert(vec_values.end(), &raw_values[0], &raw_values[buffer_info.size]);
