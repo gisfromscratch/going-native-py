@@ -29,7 +29,7 @@ class TestAlgorithmMethods(unittest.TestCase):
         dates = [datetime(1981, 5, 23), datetime(2013, 7, 17), datetime(1981, 5, 23)]
         self.assertEqual(0, count_lt(dates, datetime(1981, 5, 23)), 'The list contains no element being less than the 23th of May in the year 1981!')
 
-    def test_read_tuples(self):
+    def test_read_tuple(self):
         row = (1, 51.83864, 12.24555, 'Dessau', datetime(1981, 5, 23))
         rows = [row]
         count = len(rows)
@@ -43,6 +43,14 @@ class TestAlgorithmMethods(unittest.TestCase):
         integers = [dollar for dollar in range(size)]
         self.assertEqual(1, count(integers, 0), 'The count is wrong!')
         #self.assertEqual(1, count_arr(integers, 0), 'The count is wrong!')
+
+    @unittest.skip('Six million dollar skip!')
+    def test_read_tuples_lee_majors(self):
+        row = (1, 51.83864, 12.24555, 'Dessau', datetime(1981, 5, 23))
+        size = int(6e7)
+        rows = [row for _ in range(size)]
+        count = len(rows)
+        self.assertEqual(count, read_tuples(rows), 'Not all rows were read!')
 
 if __name__ == '__main__':
     unittest.main()

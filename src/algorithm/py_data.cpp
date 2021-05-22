@@ -66,12 +66,23 @@ void Row::set_string(size_t index, const string& value)
     _string_values[index] = value;
 }
 
+Row::ValueTypes Row::get_value_type(size_t index) const
+{
+    if (_value_types.size() <= index)
+    {
+        return ValueTypes::Unknown;
+    }
+
+    return _value_types[index];
+}
+
 void Row::set_value_type(size_t index, ValueTypes value_type)
 {
     if (index < _value_types.size())
     {
         _value_types[index] = value_type;
     }
+    else
     {
         _value_types.push_back(value_type);
     }

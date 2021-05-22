@@ -49,15 +49,18 @@ public:
     std::string get_string(size_t index);
     void set_string(size_t index, const std::string& value);
 
-    //static const int64_t none_int = std::numeric_limits<int64_t>::min();
-
-private:
     enum class ValueTypes {
+        Unknown,
         Integer,
         Double,
         String
     };
 
+    ValueTypes get_value_type(size_t index) const;
+
+    //static const int64_t none_int = std::numeric_limits<int64_t>::min();
+
+private:
     void set_value_type(size_t index, ValueTypes value_type);
 
     std::vector<ValueTypes> _value_types;

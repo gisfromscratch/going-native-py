@@ -40,30 +40,55 @@ int py_count(const vector<Record<int>>& records, int value)
 int py_read_tuples(const vector<py::tuple>& tuples)
 {
     int count = 0;
+    Row recylced_row;
     for (const py::tuple& tuple : tuples)
     {
-        Row row;
         size_t index = 0;
         for (auto const& value : tuple)
         {
-            auto value_type = py::type::of(value);
-            stringstream type_name;
-            type_name << value_type;
-            if (0 == type_name.str().compare("<class 'int'>"))
+            if (0 == count)
             {
-                row.set_int(index, value.cast<int64_t>());
-            }
-            else if (0 == type_name.str().compare("<class 'float'>"))
-            {
-                row.set_double(index, value.cast<double>());
-            }
-            else if (0 == type_name.str().compare("<class 'str'>"))
-            {
-                row.set_string(index, value.cast<string>());
+                // Determins value types
+                auto value_type = py::type::of(value);
+                stringstream type_name;
+                type_name << value_type;
+                if (0 == type_name.str().compare("<class 'int'>"))
+                {
+                    recylced_row.set_int(index, value.cast<int64_t>());
+                }
+                else if (0 == type_name.str().compare("<class 'float'>"))
+                {
+                    recylced_row.set_double(index, value.cast<double>());
+                }
+                else if (0 == type_name.str().compare("<class 'str'>"))
+                {
+                    recylced_row.set_string(index, value.cast<string>());
+                }
+                else
+                {
+                    //cout << type_name.str() << endl;
+                }    
             }
             else
             {
-                cout << type_name.str() << endl;
+                switch (recylced_row.get_value_type(index))
+                {
+                    case Row::ValueTypes::Integer:
+                        recylced_row.set_int(index, value.cast<int64_t>());
+                        break;
+
+                    case Row::ValueTypes::Double:
+                        recylced_row.set_double(index, value.cast<double>());
+                        break;
+
+                    case Row::ValueTypes::String:
+                        recylced_row.set_string(index, value.cast<string>());
+                        break;
+
+                    case Row::ValueTypes::Unknown:
+                        //cout << "Unknown type" << endl;
+                        break;
+                }
             }
 
             index++;
