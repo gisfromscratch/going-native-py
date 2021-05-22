@@ -27,12 +27,51 @@ namespace py = pybind11;
 using namespace std;
 using namespace std::chrono;
 
+/*
 int py_count(const vector<Record<int>>& records, int value)
 {
     return count_if(records.begin(), records.end(), [&] (const Record<int>& record) {
         auto values = record.get_values();
         return value == get<0>(values);
     });
+}
+*/
+
+int py_read_tuples(const vector<py::tuple>& tuples)
+{
+    int count = 0;
+    for (const py::tuple& tuple : tuples)
+    {
+        Row row;
+        size_t index = 0;
+        for (auto const& value : tuple)
+        {
+            auto value_type = py::type::of(value);
+            stringstream type_name;
+            type_name << value_type;
+            if (0 == type_name.str().compare("<class 'int'>"))
+            {
+                row.set_int(index, value.cast<int64_t>());
+            }
+            else if (0 == type_name.str().compare("<class 'float'>"))
+            {
+                row.set_double(index, value.cast<double>());
+            }
+            else if (0 == type_name.str().compare("<class 'str'>"))
+            {
+                row.set_string(index, value.cast<string>());
+            }
+            else
+            {
+                cout << type_name.str() << endl;
+            }
+
+            index++;
+        }
+        count++;
+    }
+
+    return count;
 }
 
 template<typename T>
@@ -126,4 +165,7 @@ PYBIND11_MODULE(algorithm, m) {
         py::arg("values"), py::arg("value"));
     m.def("count_lt", &py_count_if_lt<system_clock::time_point>, "Returns the number of dates being less than the specific date.", 
         py::arg("values"), py::arg("value"));
+
+    m.def("read_tuples", &py_read_tuples, "Reads tuples into a row structure.",
+        py::arg("tuples"));
 }

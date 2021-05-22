@@ -30,3 +30,49 @@ void Record<T...>::set_values(tuple<T...> values)
 {
     _values = values;
 }
+
+
+
+int64_t Row::get_int(size_t index)
+{    
+    return _int_values.at(index);
+}
+
+void Row::set_int(size_t index, int64_t value)
+{
+    set_value_type(index, ValueTypes::Integer);
+    _int_values[index] = value;
+}
+
+double Row::get_double(size_t index)
+{
+    return _double_values.at(index);
+}
+
+void Row::set_double(size_t index, double value)
+{
+    set_value_type(index, ValueTypes::Double);
+    _double_values[index] = value;
+}
+
+string Row::get_string(size_t index)
+{
+    return _string_values.at(index);
+}
+
+void Row::set_string(size_t index, const string& value)
+{
+    set_value_type(index, ValueTypes::String);
+    _string_values[index] = value;
+}
+
+void Row::set_value_type(size_t index, ValueTypes value_type)
+{
+    if (index < _value_types.size())
+    {
+        _value_types[index] = value_type;
+    }
+    {
+        _value_types.push_back(value_type);
+    }
+}

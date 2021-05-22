@@ -5,7 +5,7 @@ import unittest
 # pip install memory_profiler
 #from memory_profiler import profile
 
-from algorithm import count, count_arr, count_lt
+from algorithm import count, count_arr, count_lt, read_tuples
 
 class TestAlgorithmMethods(unittest.TestCase):
 
@@ -28,6 +28,13 @@ class TestAlgorithmMethods(unittest.TestCase):
         self.assertEqual(1, count_lt(strings, 'Dessau'), 'The list contains one element being less than \'Dessau\'!')
         dates = [datetime(1981, 5, 23), datetime(2013, 7, 17), datetime(1981, 5, 23)]
         self.assertEqual(0, count_lt(dates, datetime(1981, 5, 23)), 'The list contains no element being less than the 23th of May in the year 1981!')
+
+    def test_read_tuples(self):
+        row = (1, 51.83864, 12.24555, 'Dessau', datetime(1981, 5, 23))
+        rows = [row]
+        count = len(rows)
+        self.assertEqual(count, read_tuples(rows), 'Not all rows were read!')
+
 
     #@profile
     @unittest.skip('Six million dollar skip!')

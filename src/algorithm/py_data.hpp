@@ -18,7 +18,11 @@
 #ifndef DATA_H
 #define DATA_H
 
+#include <limits>
+#include <map>
 #include <tuple>
+#include <string>
+#include <vector>
 
 template<typename... T>
 class Record {
@@ -29,6 +33,37 @@ public:
 
 private:
     std::tuple<T...> _values;
+};
+
+
+
+class Row {
+
+public:
+    int64_t get_int(size_t index);
+    void set_int(size_t index, int64_t value);
+
+    double get_double(size_t index);
+    void set_double(size_t index, double value);
+
+    std::string get_string(size_t index);
+    void set_string(size_t index, const std::string& value);
+
+    //static const int64_t none_int = std::numeric_limits<int64_t>::min();
+
+private:
+    enum class ValueTypes {
+        Integer,
+        Double,
+        String
+    };
+
+    void set_value_type(size_t index, ValueTypes value_type);
+
+    std::vector<ValueTypes> _value_types;
+    std::map<size_t, int64_t> _int_values;
+    std::map<size_t, double> _double_values;
+    std::map<size_t, std::string> _string_values;
 };
 
 #endif

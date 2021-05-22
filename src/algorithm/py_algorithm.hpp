@@ -20,6 +20,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <sstream>
 #include <string>
 #include <vector>
 
