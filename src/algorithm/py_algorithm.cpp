@@ -15,6 +15,7 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // 
 #include "py_algorithm.hpp"
+#include "py_data.hpp"
 
 #include <pybind11/pybind11.h>
 #include <pybind11/chrono.h>
@@ -25,6 +26,14 @@ namespace py = pybind11;
 
 using namespace std;
 using namespace std::chrono;
+
+int py_count(const vector<Record<int>>& records, int value)
+{
+    return count_if(records.begin(), records.end(), [&] (const Record<int>& record) {
+        auto values = record.get_values();
+        return value == get<0>(values);
+    });
+}
 
 template<typename T>
 int py_count(const vector<T>& values, T value)
