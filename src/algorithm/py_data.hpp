@@ -18,6 +18,7 @@
 #ifndef DATA_H
 #define DATA_H
 
+#include <chrono>
 #include <limits>
 #include <map>
 #include <tuple>
@@ -46,6 +47,9 @@ public:
     double get_double(size_t index);
     void set_double(size_t index, double value);
 
+    std::chrono::system_clock::time_point get_date(size_t index);
+    void set_date(size_t index, std::chrono::system_clock::time_point value);
+ 
     std::string get_string(size_t index);
     void set_string(size_t index, const std::string& value);
 
@@ -53,6 +57,7 @@ public:
         Unknown,
         Integer,
         Double,
+        Date,
         String
     };
 
@@ -66,6 +71,7 @@ private:
     std::vector<ValueTypes> _value_types;
     std::map<size_t, int64_t> _int_values;
     std::map<size_t, double> _double_values;
+    std::map<size_t, std::chrono::system_clock::time_point> _date_values;
     std::map<size_t, std::string> _string_values;
 };
 

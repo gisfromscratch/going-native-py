@@ -18,6 +18,7 @@
 #include "py_data.hpp"
 
 using namespace std;
+using namespace chrono;
 
 template<typename... T>
 tuple<T...> Record<T...>::get_values() const
@@ -53,6 +54,17 @@ void Row::set_double(size_t index, double value)
 {
     set_value_type(index, ValueTypes::Double);
     _double_values[index] = value;
+}
+
+system_clock::time_point Row::get_date(size_t index)
+{
+    return _date_values.at(index);
+}
+
+void Row::set_date(size_t index, system_clock::time_point value)
+{
+    set_value_type(index, ValueTypes::Date);
+    _date_values[index] = value;
 }
 
 string Row::get_string(size_t index)

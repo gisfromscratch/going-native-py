@@ -60,6 +60,10 @@ int py_read_tuples(const vector<py::tuple>& tuples)
                 {
                     recylced_row.set_double(index, value.cast<double>());
                 }
+                else if (0 == type_name.str().compare("<class 'datetime'>"))
+                {
+                    recylced_row.set_date(index, value.cast<system_clock::time_point>());
+                }
                 else if (0 == type_name.str().compare("<class 'str'>"))
                 {
                     recylced_row.set_string(index, value.cast<string>());
@@ -79,6 +83,10 @@ int py_read_tuples(const vector<py::tuple>& tuples)
 
                     case Row::ValueTypes::Double:
                         recylced_row.set_double(index, value.cast<double>());
+                        break;
+
+                    case Row::ValueTypes::Date:
+                        recylced_row.set_date(index, value.cast<system_clock::time_point>());
                         break;
 
                     case Row::ValueTypes::String:
