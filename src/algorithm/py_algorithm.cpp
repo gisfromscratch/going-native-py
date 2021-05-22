@@ -48,7 +48,7 @@ int py_read_tuples(const vector<py::tuple>& tuples)
         {
             if (0 == count)
             {
-                // Determins value types
+                // Determine the value types
                 auto value_type = py::type::of(value);
                 stringstream type_name;
                 type_name << value_type;
