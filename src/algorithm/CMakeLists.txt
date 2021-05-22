@@ -12,5 +12,13 @@ file (GLOB ALGORITHM_PYMOD
     "../../build/algorithm/*.dll"
 )
 
+#[[
 message (NOTICE "Copying " ${ALGORITHM_PYMOD} " into test folder...")
 file(COPY ${ALGORITHM_PYMOD} DESTINATION "../../test")
+]]
+
+add_custom_command (
+    TARGET algorithm POST_BUILD 
+    COMMAND ${CMAKE_COMMAND} -E copy "${ALGORITHM_PYMOD}" "../../test"
+    COMMENT "Copying ${ALGORITHM_PYMOD} to test directory"
+)
