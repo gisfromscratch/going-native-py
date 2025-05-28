@@ -176,6 +176,46 @@ int py_count_if_gteq(const vector<T>& values, T value)
     });
 }
 
+template<typename T>
+vector<T> py_reverse(const vector<T>& values)
+{
+    vector<T> result = values;
+    reverse(result.begin(), result.end());
+    return result;
+}
+
+template<typename T>
+vector<T> py_sort(const vector<T>& values)
+{
+    vector<T> result = values;
+    sort(result.begin(), result.end());
+    return result;
+}
+
+template<typename T>
+T py_accumulate(const vector<T>& values, T init)
+{
+    return accumulate(values.begin(), values.end(), init);
+}
+
+template<typename T>
+T py_min_element(const vector<T>& values)
+{
+    if (values.empty()) {
+        throw runtime_error("Cannot find minimum of empty container");
+    }
+    return *min_element(values.begin(), values.end());
+}
+
+template<typename T>
+T py_max_element(const vector<T>& values)
+{
+    if (values.empty()) {
+        throw runtime_error("Cannot find maximum of empty container");
+    }
+    return *max_element(values.begin(), values.end());
+}
+
 
 
 PYBIND11_MODULE(algorithm, m) {
@@ -198,6 +238,47 @@ PYBIND11_MODULE(algorithm, m) {
         py::arg("values"), py::arg("value"));
     m.def("count_lt", &py_count_if_lt<system_clock::time_point>, "Returns the number of dates being less than the specific date.", 
         py::arg("values"), py::arg("value"));
+
+    m.def("reverse", &py_reverse<int>, "Returns a reversed copy of the integer list.", 
+        py::arg("values"));
+    m.def("reverse", &py_reverse<float>, "Returns a reversed copy of the float list.", 
+        py::arg("values"));
+    m.def("reverse", &py_reverse<string>, "Returns a reversed copy of the string list.", 
+        py::arg("values"));
+    m.def("reverse", &py_reverse<system_clock::time_point>, "Returns a reversed copy of the date list.", 
+        py::arg("values"));
+
+    m.def("sort", &py_sort<int>, "Returns a sorted copy of the integer list.", 
+        py::arg("values"));
+    m.def("sort", &py_sort<float>, "Returns a sorted copy of the float list.", 
+        py::arg("values"));
+    m.def("sort", &py_sort<string>, "Returns a sorted copy of the string list.", 
+        py::arg("values"));
+    m.def("sort", &py_sort<system_clock::time_point>, "Returns a sorted copy of the date list.", 
+        py::arg("values"));
+
+    m.def("accumulate", &py_accumulate<int>, "Returns the sum of integers starting with initial value.", 
+        py::arg("values"), py::arg("init"));
+    m.def("accumulate", &py_accumulate<float>, "Returns the sum of floats starting with initial value.", 
+        py::arg("values"), py::arg("init"));
+
+    m.def("min_element", &py_min_element<int>, "Returns the minimum integer value in the list.", 
+        py::arg("values"));
+    m.def("min_element", &py_min_element<float>, "Returns the minimum float value in the list.", 
+        py::arg("values"));
+    m.def("min_element", &py_min_element<string>, "Returns the minimum string value in the list.", 
+        py::arg("values"));
+    m.def("min_element", &py_min_element<system_clock::time_point>, "Returns the minimum date value in the list.", 
+        py::arg("values"));
+
+    m.def("max_element", &py_max_element<int>, "Returns the maximum integer value in the list.", 
+        py::arg("values"));
+    m.def("max_element", &py_max_element<float>, "Returns the maximum float value in the list.", 
+        py::arg("values"));
+    m.def("max_element", &py_max_element<string>, "Returns the maximum string value in the list.", 
+        py::arg("values"));
+    m.def("max_element", &py_max_element<system_clock::time_point>, "Returns the maximum date value in the list.", 
+        py::arg("values"));
 
     m.def("read_tuples", &py_read_tuples, "Reads tuples into a row structure.",
         py::arg("tuples"));
