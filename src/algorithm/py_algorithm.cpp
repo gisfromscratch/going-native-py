@@ -216,6 +216,86 @@ T py_max_element(const vector<T>& values)
     return *max_element(values.begin(), values.end());
 }
 
+// Transform functions with predefined operations
+template<typename T>
+vector<T> py_transform_square(const vector<T>& values)
+{
+    vector<T> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const T& x) { return x * x; });
+    return result;
+}
+
+template<typename T>
+vector<T> py_transform_abs(const vector<T>& values)
+{
+    vector<T> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const T& x) { return x < 0 ? -x : x; });
+    return result;
+}
+
+vector<float> py_transform_sqrt(const vector<float>& values)
+{
+    vector<float> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const float& x) { return sqrt(x); });
+    return result;
+}
+
+vector<string> py_transform_toupper(const vector<string>& values)
+{
+    vector<string> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const string& s) {
+        string upper_s = s;
+        transform(upper_s.begin(), upper_s.end(), upper_s.begin(), ::toupper);
+        return upper_s;
+    });
+    return result;
+}
+
+vector<string> py_transform_tolower(const vector<string>& values)
+{
+    vector<string> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const string& s) {
+        string lower_s = s;
+        transform(lower_s.begin(), lower_s.end(), lower_s.begin(), ::tolower);
+        return lower_s;
+    });
+    return result;
+}
+
+template<typename T>
+vector<T> py_unique(const vector<T>& values)
+{
+    vector<T> result = values;
+    auto last = unique(result.begin(), result.end());
+    result.erase(last, result.end());
+    return result;
+}
+
+template<typename T>
+bool py_binary_search(const vector<T>& values, T value)
+{
+    return binary_search(values.begin(), values.end(), value);
+}
+
+template<typename T>
+T py_nth_element(const vector<T>& values, int n)
+{
+    if (values.empty()) {
+        throw runtime_error("Cannot find nth element of empty container");
+    }
+    if (n < 0 || n >= values.size()) {
+        throw runtime_error("Index out of bounds");
+    }
+    vector<T> result = values;
+    nth_element(result.begin(), result.begin() + n, result.end());
+    return result[n];
+}
+
 
 
 PYBIND11_MODULE(algorithm, m) {
@@ -279,6 +359,48 @@ PYBIND11_MODULE(algorithm, m) {
         py::arg("values"));
     m.def("max_element", &py_max_element<system_clock::time_point>, "Returns the maximum date value in the list.", 
         py::arg("values"));
+
+    m.def("transform_square", &py_transform_square<int>, "Returns a list with each integer squared.", 
+        py::arg("values"));
+    m.def("transform_square", &py_transform_square<float>, "Returns a list with each float squared.", 
+        py::arg("values"));
+    m.def("transform_abs", &py_transform_abs<int>, "Returns a list with absolute value of each integer.", 
+        py::arg("values"));
+    m.def("transform_abs", &py_transform_abs<float>, "Returns a list with absolute value of each float.", 
+        py::arg("values"));
+    m.def("transform_sqrt", &py_transform_sqrt, "Returns a list with square root of each float.", 
+        py::arg("values"));
+    m.def("transform_toupper", &py_transform_toupper, "Returns a list with each string converted to uppercase.", 
+        py::arg("values"));
+    m.def("transform_tolower", &py_transform_tolower, "Returns a list with each string converted to lowercase.", 
+        py::arg("values"));
+
+    m.def("unique", &py_unique<int>, "Returns a list with adjacent duplicate integers removed.", 
+        py::arg("values"));
+    m.def("unique", &py_unique<float>, "Returns a list with adjacent duplicate floats removed.", 
+        py::arg("values"));
+    m.def("unique", &py_unique<string>, "Returns a list with adjacent duplicate strings removed.", 
+        py::arg("values"));
+    m.def("unique", &py_unique<system_clock::time_point>, "Returns a list with adjacent duplicate dates removed.", 
+        py::arg("values"));
+
+    m.def("binary_search", &py_binary_search<int>, "Returns true if the integer value is found in the sorted list.", 
+        py::arg("values"), py::arg("value"));
+    m.def("binary_search", &py_binary_search<float>, "Returns true if the float value is found in the sorted list.", 
+        py::arg("values"), py::arg("value"));
+    m.def("binary_search", &py_binary_search<string>, "Returns true if the string value is found in the sorted list.", 
+        py::arg("values"), py::arg("value"));
+    m.def("binary_search", &py_binary_search<system_clock::time_point>, "Returns true if the date value is found in the sorted list.", 
+        py::arg("values"), py::arg("value"));
+
+    m.def("nth_element", &py_nth_element<int>, "Returns the nth smallest integer element (0-indexed).", 
+        py::arg("values"), py::arg("n"));
+    m.def("nth_element", &py_nth_element<float>, "Returns the nth smallest float element (0-indexed).", 
+        py::arg("values"), py::arg("n"));
+    m.def("nth_element", &py_nth_element<string>, "Returns the nth smallest string element (0-indexed).", 
+        py::arg("values"), py::arg("n"));
+    m.def("nth_element", &py_nth_element<system_clock::time_point>, "Returns the nth smallest date element (0-indexed).", 
+        py::arg("values"), py::arg("n"));
 
     m.def("read_tuples", &py_read_tuples, "Reads tuples into a row structure.",
         py::arg("tuples"));

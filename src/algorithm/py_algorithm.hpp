@@ -19,7 +19,10 @@
 #define ALGORITHM_H
 
 #include <algorithm>
+#include <cctype>
 #include <chrono>
+#include <cmath>
+#include <iterator>
 #include <numeric>
 #include <sstream>
 #include <stdexcept>

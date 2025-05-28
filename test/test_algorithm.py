@@ -5,7 +5,7 @@ import unittest
 # pip install memory_profiler
 #from memory_profiler import profile
 
-from algorithm import count, count_arr, count_lt, read_tuples, reverse, sort, accumulate, min_element, max_element
+from algorithm import count, count_arr, count_lt, read_tuples, reverse, sort, accumulate, min_element, max_element, transform_square, transform_abs, transform_sqrt, transform_toupper, transform_tolower, unique, binary_search, nth_element
 
 class TestAlgorithmMethods(unittest.TestCase):
 
@@ -92,6 +92,97 @@ class TestAlgorithmMethods(unittest.TestCase):
             min_element([])
         with self.assertRaises(RuntimeError):
             max_element([])
+
+    def test_transform_functions(self):
+        # Test transform_square
+        integers = [1, -2, 3, -4, 5]
+        self.assertEqual([1, 4, 9, 16, 25], transform_square(integers), 'Transform square should work for integers!')
+        floats = [1.0, -2.0, 3.0]
+        expected_floats = [1.0, 4.0, 9.0]
+        result_floats = transform_square(floats)
+        for i, (expected, actual) in enumerate(zip(expected_floats, result_floats)):
+            self.assertAlmostEqual(expected, actual, places=5, msg=f'Float square mismatch at index {i}')
+        
+        # Test transform_abs
+        negative_ints = [1, -2, 3, -4, 5]
+        self.assertEqual([1, 2, 3, 4, 5], transform_abs(negative_ints), 'Transform abs should work for integers!')
+        negative_floats = [1.5, -2.5, 3.5, -4.5]
+        expected_abs_floats = [1.5, 2.5, 3.5, 4.5]
+        result_abs_floats = transform_abs(negative_floats)
+        for i, (expected, actual) in enumerate(zip(expected_abs_floats, result_abs_floats)):
+            self.assertAlmostEqual(expected, actual, places=5, msg=f'Float abs mismatch at index {i}')
+        
+        # Test transform_sqrt
+        sqrt_input = [1.0, 4.0, 9.0, 16.0, 25.0]
+        expected_sqrt = [1.0, 2.0, 3.0, 4.0, 5.0]
+        result_sqrt = transform_sqrt(sqrt_input)
+        for i, (expected, actual) in enumerate(zip(expected_sqrt, result_sqrt)):
+            self.assertAlmostEqual(expected, actual, places=5, msg=f'Sqrt mismatch at index {i}')
+        
+        # Test string transforms
+        mixed_case = ['Hello', 'WORLD', 'PyThOn']
+        self.assertEqual(['HELLO', 'WORLD', 'PYTHON'], transform_toupper(mixed_case), 'Transform toupper should work!')
+        self.assertEqual(['hello', 'world', 'python'], transform_tolower(mixed_case), 'Transform tolower should work!')
+
+    def test_unique(self):
+        # Test with integers (adjacent duplicates)
+        integers = [1, 1, 2, 2, 3, 1, 2]  # Note: unique only removes adjacent duplicates
+        self.assertEqual([1, 2, 3, 1, 2], unique(integers), 'Unique should remove only adjacent duplicates!')
+        
+        # Test with sorted integers
+        sorted_integers = [1, 1, 1, 2, 2, 3, 3, 3]
+        self.assertEqual([1, 2, 3], unique(sorted_integers), 'Unique should work well with sorted data!')
+        
+        # Test with strings
+        strings = ['a', 'a', 'b', 'b', 'c', 'c']
+        self.assertEqual(['a', 'b', 'c'], unique(strings), 'Unique should work with strings!')
+        
+        # Test with no duplicates
+        no_duplicates = [1, 2, 3, 4, 5]
+        self.assertEqual([1, 2, 3, 4, 5], unique(no_duplicates), 'Unique should not change list without adjacent duplicates!')
+
+    def test_binary_search(self):
+        # Test with sorted integers
+        sorted_integers = [1, 3, 5, 7, 9, 11, 13]
+        self.assertTrue(binary_search(sorted_integers, 5), 'Binary search should find existing element!')
+        self.assertTrue(binary_search(sorted_integers, 1), 'Binary search should find first element!')
+        self.assertTrue(binary_search(sorted_integers, 13), 'Binary search should find last element!')
+        self.assertFalse(binary_search(sorted_integers, 6), 'Binary search should not find non-existing element!')
+        self.assertFalse(binary_search(sorted_integers, 0), 'Binary search should not find element smaller than minimum!')
+        self.assertFalse(binary_search(sorted_integers, 15), 'Binary search should not find element larger than maximum!')
+        
+        # Test with sorted strings
+        sorted_strings = ['apple', 'banana', 'cherry', 'date']
+        self.assertTrue(binary_search(sorted_strings, 'banana'), 'Binary search should work with strings!')
+        self.assertFalse(binary_search(sorted_strings, 'grape'), 'Binary search should not find non-existing string!')
+        
+        # Test with empty list
+        self.assertFalse(binary_search([], 5), 'Binary search on empty list should return False!')
+
+    def test_nth_element(self):
+        values = [9, 2, 5, 1, 8, 3, 7, 4, 6]
+        
+        # Test finding minimum (0th element)
+        self.assertEqual(1, nth_element(values, 0), 'nth_element should find minimum (0th element)!')
+        
+        # Test finding median (middle element)
+        self.assertEqual(5, nth_element(values, 4), 'nth_element should find median (4th element in 0-indexed)!')
+        
+        # Test finding maximum (last element)
+        self.assertEqual(9, nth_element(values, 8), 'nth_element should find maximum (8th element in 0-indexed)!')
+        
+        # Test with floats
+        float_values = [3.3, 1.1, 4.4, 2.2]
+        result = nth_element(float_values, 1)  # Should be 2.2 (2nd smallest)
+        self.assertAlmostEqual(2.2, result, places=5, msg='nth_element should work with floats!')
+        
+        # Test exceptions
+        with self.assertRaises(RuntimeError):
+            nth_element([], 0)  # Empty list
+        with self.assertRaises(RuntimeError):
+            nth_element([1, 2, 3], -1)  # Negative index
+        with self.assertRaises(RuntimeError):
+            nth_element([1, 2, 3], 3)  # Index out of bounds
 
     def test_read_tuple(self):
         row = (1, 51.83864, 12.24555, 'Dessau', datetime(1981, 5, 23))
