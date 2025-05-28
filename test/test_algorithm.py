@@ -5,7 +5,7 @@ import unittest
 # pip install memory_profiler
 #from memory_profiler import profile
 
-from algorithm import count, count_arr, count_lt, read_tuples, reverse, sort, accumulate, min_element, max_element, transform_square, transform_abs, transform_sqrt, transform_toupper, transform_tolower, unique, binary_search, nth_element
+from algorithm import count, count_arr, count_lt, read_tuples, reverse, sort, accumulate, min_element, max_element, transform_square, transform_abs, transform_sqrt, transform_toupper, transform_tolower, unique, binary_search, nth_element, set_union, set_intersection, set_difference, includes, partition_less_than, rotate_left
 
 class TestAlgorithmMethods(unittest.TestCase):
 
@@ -183,6 +183,90 @@ class TestAlgorithmMethods(unittest.TestCase):
             nth_element([1, 2, 3], -1)  # Negative index
         with self.assertRaises(RuntimeError):
             nth_element([1, 2, 3], 3)  # Index out of bounds
+
+    def test_set_operations(self):
+        # Test with sorted integer sets
+        set1 = [1, 3, 5, 7, 9]
+        set2 = [2, 3, 6, 7, 8]
+        
+        # Test set_union
+        union_result = set_union(set1, set2)
+        self.assertEqual([1, 2, 3, 5, 6, 7, 8, 9], union_result, 'Set union should contain all unique elements!')
+        
+        # Test set_intersection
+        intersection_result = set_intersection(set1, set2)
+        self.assertEqual([3, 7], intersection_result, 'Set intersection should contain common elements!')
+        
+        # Test set_difference
+        difference_result = set_difference(set1, set2)
+        self.assertEqual([1, 5, 9], difference_result, 'Set difference should contain elements in first but not second!')
+        
+        # Test includes
+        subset = [3, 7]
+        self.assertTrue(includes(set1, subset), 'Set1 should include subset [3, 7]!')
+        self.assertFalse(includes(set1, [2, 4]), 'Set1 should not include [2, 4]!')
+        
+        # Test with strings
+        str_set1 = ['apple', 'banana', 'cherry']
+        str_set2 = ['banana', 'date', 'elderberry']
+        str_union = set_union(str_set1, str_set2)
+        self.assertEqual(['apple', 'banana', 'cherry', 'date', 'elderberry'], str_union, 'String set union should work!')
+        
+        # Test empty sets
+        self.assertEqual(set1, set_union(set1, []), 'Union with empty set should return original set!')
+        self.assertEqual([], set_intersection(set1, []), 'Intersection with empty set should return empty set!')
+
+    def test_partition_and_rotate(self):
+        # Test partition_less_than
+        values = [9, 2, 5, 1, 8, 3, 7, 4, 6]
+        partitioned = partition_less_than(values, 5)
+        # Check that all elements < 5 are before all elements >= 5
+        less_than_five = [x for x in partitioned if x < 5]
+        greater_equal_five = [x for x in partitioned if x >= 5]
+        
+        # Find the partition point
+        partition_point = 0
+        for i, val in enumerate(partitioned):
+            if val >= 5:
+                partition_point = i
+                break
+        
+        # All elements before partition point should be < 5
+        for i in range(partition_point):
+            self.assertLess(partitioned[i], 5, f'Element at index {i} should be less than 5!')
+        
+        # All elements from partition point should be >= 5
+        for i in range(partition_point, len(partitioned)):
+            self.assertGreaterEqual(partitioned[i], 5, f'Element at index {i} should be >= 5!')
+        
+        # Test rotate_left
+        sequence = [1, 2, 3, 4, 5]
+        
+        # Rotate left by 2 positions
+        rotated_left_2 = rotate_left(sequence, 2)
+        self.assertEqual([3, 4, 5, 1, 2], rotated_left_2, 'Rotate left by 2 should work!')
+        
+        # Rotate left by 0 (no change)
+        rotated_left_0 = rotate_left(sequence, 0)
+        self.assertEqual([1, 2, 3, 4, 5], rotated_left_0, 'Rotate left by 0 should not change sequence!')
+        
+        # Rotate left by negative amount (right rotation)
+        rotated_left_neg1 = rotate_left(sequence, -1)
+        self.assertEqual([5, 1, 2, 3, 4], rotated_left_neg1, 'Rotate left by -1 should rotate right!')
+        
+        # Rotate by more than length (should wrap around)
+        rotated_left_7 = rotate_left(sequence, 7)  # 7 % 5 = 2
+        self.assertEqual([3, 4, 5, 1, 2], rotated_left_7, 'Rotate should wrap around for large values!')
+        
+        # Test with empty list
+        self.assertEqual([], rotate_left([], 5), 'Rotate of empty list should return empty list!')
+        
+        # Test with floats
+        float_seq = [1.1, 2.2, 3.3]
+        rotated_float = rotate_left(float_seq, 1)
+        expected = [2.2, 3.3, 1.1]
+        for i, (exp, act) in enumerate(zip(expected, rotated_float)):
+            self.assertAlmostEqual(exp, act, places=5, msg=f'Float rotate mismatch at index {i}')
 
     def test_read_tuple(self):
         row = (1, 51.83864, 12.24555, 'Dessau', datetime(1981, 5, 23))

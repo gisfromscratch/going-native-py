@@ -296,6 +296,59 @@ T py_nth_element(const vector<T>& values, int n)
     return result[n];
 }
 
+// Set operations (require sorted inputs)
+template<typename T>
+vector<T> py_set_union(const vector<T>& values1, const vector<T>& values2)
+{
+    vector<T> result;
+    set_union(values1.begin(), values1.end(), values2.begin(), values2.end(), back_inserter(result));
+    return result;
+}
+
+template<typename T>
+vector<T> py_set_intersection(const vector<T>& values1, const vector<T>& values2)
+{
+    vector<T> result;
+    set_intersection(values1.begin(), values1.end(), values2.begin(), values2.end(), back_inserter(result));
+    return result;
+}
+
+template<typename T>
+vector<T> py_set_difference(const vector<T>& values1, const vector<T>& values2)
+{
+    vector<T> result;
+    set_difference(values1.begin(), values1.end(), values2.begin(), values2.end(), back_inserter(result));
+    return result;
+}
+
+template<typename T>
+bool py_includes(const vector<T>& values1, const vector<T>& values2)
+{
+    return includes(values1.begin(), values1.end(), values2.begin(), values2.end());
+}
+
+// Additional useful algorithms
+template<typename T>
+vector<T> py_partition_less_than(const vector<T>& values, T threshold)
+{
+    vector<T> result = values;
+    partition(result.begin(), result.end(), [threshold](const T& x) { return x < threshold; });
+    return result;
+}
+
+template<typename T>
+vector<T> py_rotate_left(const vector<T>& values, int positions)
+{
+    if (values.empty() || positions == 0) {
+        return values;
+    }
+    vector<T> result = values;
+    int n = static_cast<int>(result.size());
+    positions = ((positions % n) + n) % n;  // Handle negative positions
+    rotate(result.begin(), result.begin() + positions, result.end());
+    return result;
+}
+
 
 
 PYBIND11_MODULE(algorithm, m) {
@@ -401,6 +454,48 @@ PYBIND11_MODULE(algorithm, m) {
         py::arg("values"), py::arg("n"));
     m.def("nth_element", &py_nth_element<system_clock::time_point>, "Returns the nth smallest date element (0-indexed).", 
         py::arg("values"), py::arg("n"));
+
+    m.def("set_union", &py_set_union<int>, "Returns the union of two sorted integer lists.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_union", &py_set_union<float>, "Returns the union of two sorted float lists.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_union", &py_set_union<string>, "Returns the union of two sorted string lists.", 
+        py::arg("values1"), py::arg("values2"));
+
+    m.def("set_intersection", &py_set_intersection<int>, "Returns the intersection of two sorted integer lists.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_intersection", &py_set_intersection<float>, "Returns the intersection of two sorted float lists.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_intersection", &py_set_intersection<string>, "Returns the intersection of two sorted string lists.", 
+        py::arg("values1"), py::arg("values2"));
+
+    m.def("set_difference", &py_set_difference<int>, "Returns the difference of two sorted integer lists (elements in first but not second).", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_difference", &py_set_difference<float>, "Returns the difference of two sorted float lists (elements in first but not second).", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_difference", &py_set_difference<string>, "Returns the difference of two sorted string lists (elements in first but not second).", 
+        py::arg("values1"), py::arg("values2"));
+
+    m.def("includes", &py_includes<int>, "Returns true if the first sorted integer list includes all elements of the second.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("includes", &py_includes<float>, "Returns true if the first sorted float list includes all elements of the second.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("includes", &py_includes<string>, "Returns true if the first sorted string list includes all elements of the second.", 
+        py::arg("values1"), py::arg("values2"));
+
+    m.def("partition_less_than", &py_partition_less_than<int>, "Returns a list partitioned so elements less than threshold come first.", 
+        py::arg("values"), py::arg("threshold"));
+    m.def("partition_less_than", &py_partition_less_than<float>, "Returns a list partitioned so elements less than threshold come first.", 
+        py::arg("values"), py::arg("threshold"));
+    m.def("partition_less_than", &py_partition_less_than<string>, "Returns a list partitioned so elements less than threshold come first.", 
+        py::arg("values"), py::arg("threshold"));
+
+    m.def("rotate_left", &py_rotate_left<int>, "Returns a list rotated left by the specified number of positions.", 
+        py::arg("values"), py::arg("positions"));
+    m.def("rotate_left", &py_rotate_left<float>, "Returns a list rotated left by the specified number of positions.", 
+        py::arg("values"), py::arg("positions"));
+    m.def("rotate_left", &py_rotate_left<string>, "Returns a list rotated left by the specified number of positions.", 
+        py::arg("values"), py::arg("positions"));
 
     m.def("read_tuples", &py_read_tuples, "Reads tuples into a row structure.",
         py::arg("tuples"));
