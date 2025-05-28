@@ -19,6 +19,6 @@ file(COPY ${ALGORITHM_PYMOD} DESTINATION "../../test")
 
 add_custom_command (
     TARGET algorithm POST_BUILD 
-    COMMAND ${CMAKE_COMMAND} -E copy "${ALGORITHM_PYMOD}" "../../test"
-    COMMENT "Copying ${ALGORITHM_PYMOD} to test directory"
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:algorithm> "../../test/"
+    COMMENT "Copying algorithm module to test directory"
 )
