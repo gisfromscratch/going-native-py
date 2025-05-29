@@ -13,10 +13,6 @@ include_directories(
     $ENV{vcpkg_root}/installed/x64-linux/include/fast-cpp-csv-parser
 )
 
-# Define the target Python version
-#set (PYBIND11_FINDPYTHON ON)
-#set (PYTHON_EXECUTABLE "/mnt/data/miniconda3/envs/arcgis/bin/python")
-#set (PYBIND11_PYTHON_VERSION "3.9")
 
 # TODO: Install pybind11 e.g. vcpkg install pybind11:x64-linux
 find_package (pybind11 CONFIG REQUIRED)
