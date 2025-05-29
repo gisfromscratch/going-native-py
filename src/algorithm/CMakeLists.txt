@@ -4,7 +4,6 @@ pybind11_add_module (algorithm py_algorithm.cpp py_algorithm.hpp
 
 # rename the target output
 # suffix rule not needed anymore, as pybind11_add_module already handles this
-#set_target_properties(algorithm PROPERTIES OUTPUT_NAME algorithm.so)
 
 
 #[[
