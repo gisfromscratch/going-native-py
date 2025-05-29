@@ -8,8 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Skip vcpkg for now and use system pybind11
 # include($ENV{vcpkg_root}/scripts/buildsystems/vcpkg.cmake)
 
-# Find pybind11 from pip installation
-find_package (pybind11 CONFIG REQUIRED)
+# Find python and pybind11
+find_package(Python COMPONENTS Interpreter Development)
+find_package(pybind11 CONFIG)
 
 add_subdirectory (algorithm)
 # Skip io module for now
