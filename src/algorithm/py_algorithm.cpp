@@ -176,6 +176,179 @@ int py_count_if_gteq(const vector<T>& values, T value)
     });
 }
 
+template<typename T>
+vector<T> py_reverse(const vector<T>& values)
+{
+    vector<T> result = values;
+    reverse(result.begin(), result.end());
+    return result;
+}
+
+template<typename T>
+vector<T> py_sort(const vector<T>& values)
+{
+    vector<T> result = values;
+    sort(result.begin(), result.end());
+    return result;
+}
+
+template<typename T>
+T py_accumulate(const vector<T>& values, T init)
+{
+    return accumulate(values.begin(), values.end(), init);
+}
+
+template<typename T>
+T py_min_element(const vector<T>& values)
+{
+    if (values.empty()) {
+        throw runtime_error("Cannot find minimum of empty container");
+    }
+    return *min_element(values.begin(), values.end());
+}
+
+template<typename T>
+T py_max_element(const vector<T>& values)
+{
+    if (values.empty()) {
+        throw runtime_error("Cannot find maximum of empty container");
+    }
+    return *max_element(values.begin(), values.end());
+}
+
+// Transform functions with predefined operations
+template<typename T>
+vector<T> py_transform_square(const vector<T>& values)
+{
+    vector<T> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const T& x) { return x * x; });
+    return result;
+}
+
+template<typename T>
+vector<T> py_transform_abs(const vector<T>& values)
+{
+    vector<T> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const T& x) { return x < 0 ? -x : x; });
+    return result;
+}
+
+vector<float> py_transform_sqrt(const vector<float>& values)
+{
+    vector<float> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const float& x) { return sqrt(x); });
+    return result;
+}
+
+vector<string> py_transform_toupper(const vector<string>& values)
+{
+    vector<string> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const string& s) {
+        string upper_s = s;
+        transform(upper_s.begin(), upper_s.end(), upper_s.begin(), ::toupper);
+        return upper_s;
+    });
+    return result;
+}
+
+vector<string> py_transform_tolower(const vector<string>& values)
+{
+    vector<string> result;
+    result.reserve(values.size());
+    transform(values.begin(), values.end(), back_inserter(result), [](const string& s) {
+        string lower_s = s;
+        transform(lower_s.begin(), lower_s.end(), lower_s.begin(), ::tolower);
+        return lower_s;
+    });
+    return result;
+}
+
+template<typename T>
+vector<T> py_unique(const vector<T>& values)
+{
+    vector<T> result = values;
+    auto last = unique(result.begin(), result.end());
+    result.erase(last, result.end());
+    return result;
+}
+
+template<typename T>
+bool py_binary_search(const vector<T>& values, T value)
+{
+    return binary_search(values.begin(), values.end(), value);
+}
+
+template<typename T>
+T py_nth_element(const vector<T>& values, int n)
+{
+    if (values.empty()) {
+        throw runtime_error("Cannot find nth element of empty container");
+    }
+    if (n < 0 || n >= values.size()) {
+        throw runtime_error("Index out of bounds");
+    }
+    vector<T> result = values;
+    nth_element(result.begin(), result.begin() + n, result.end());
+    return result[n];
+}
+
+// Set operations (require sorted inputs)
+template<typename T>
+vector<T> py_set_union(const vector<T>& values1, const vector<T>& values2)
+{
+    vector<T> result;
+    set_union(values1.begin(), values1.end(), values2.begin(), values2.end(), back_inserter(result));
+    return result;
+}
+
+template<typename T>
+vector<T> py_set_intersection(const vector<T>& values1, const vector<T>& values2)
+{
+    vector<T> result;
+    set_intersection(values1.begin(), values1.end(), values2.begin(), values2.end(), back_inserter(result));
+    return result;
+}
+
+template<typename T>
+vector<T> py_set_difference(const vector<T>& values1, const vector<T>& values2)
+{
+    vector<T> result;
+    set_difference(values1.begin(), values1.end(), values2.begin(), values2.end(), back_inserter(result));
+    return result;
+}
+
+template<typename T>
+bool py_includes(const vector<T>& values1, const vector<T>& values2)
+{
+    return includes(values1.begin(), values1.end(), values2.begin(), values2.end());
+}
+
+// Additional useful algorithms
+template<typename T>
+vector<T> py_partition_less_than(const vector<T>& values, T threshold)
+{
+    vector<T> result = values;
+    partition(result.begin(), result.end(), [threshold](const T& x) { return x < threshold; });
+    return result;
+}
+
+template<typename T>
+vector<T> py_rotate_left(const vector<T>& values, int positions)
+{
+    if (values.empty() || positions == 0) {
+        return values;
+    }
+    vector<T> result = values;
+    int n = static_cast<int>(result.size());
+    positions = ((positions % n) + n) % n;  // Handle negative positions
+    rotate(result.begin(), result.begin() + positions, result.end());
+    return result;
+}
+
 
 
 PYBIND11_MODULE(algorithm, m) {
@@ -198,6 +371,131 @@ PYBIND11_MODULE(algorithm, m) {
         py::arg("values"), py::arg("value"));
     m.def("count_lt", &py_count_if_lt<system_clock::time_point>, "Returns the number of dates being less than the specific date.", 
         py::arg("values"), py::arg("value"));
+
+    m.def("reverse", &py_reverse<int>, "Returns a reversed copy of the integer list.", 
+        py::arg("values"));
+    m.def("reverse", &py_reverse<float>, "Returns a reversed copy of the float list.", 
+        py::arg("values"));
+    m.def("reverse", &py_reverse<string>, "Returns a reversed copy of the string list.", 
+        py::arg("values"));
+    m.def("reverse", &py_reverse<system_clock::time_point>, "Returns a reversed copy of the date list.", 
+        py::arg("values"));
+
+    m.def("sort", &py_sort<int>, "Returns a sorted copy of the integer list.", 
+        py::arg("values"));
+    m.def("sort", &py_sort<float>, "Returns a sorted copy of the float list.", 
+        py::arg("values"));
+    m.def("sort", &py_sort<string>, "Returns a sorted copy of the string list.", 
+        py::arg("values"));
+    m.def("sort", &py_sort<system_clock::time_point>, "Returns a sorted copy of the date list.", 
+        py::arg("values"));
+
+    m.def("accumulate", &py_accumulate<int>, "Returns the sum of integers starting with initial value.", 
+        py::arg("values"), py::arg("init"));
+    m.def("accumulate", &py_accumulate<float>, "Returns the sum of floats starting with initial value.", 
+        py::arg("values"), py::arg("init"));
+
+    m.def("min_element", &py_min_element<int>, "Returns the minimum integer value in the list.", 
+        py::arg("values"));
+    m.def("min_element", &py_min_element<float>, "Returns the minimum float value in the list.", 
+        py::arg("values"));
+    m.def("min_element", &py_min_element<string>, "Returns the minimum string value in the list.", 
+        py::arg("values"));
+    m.def("min_element", &py_min_element<system_clock::time_point>, "Returns the minimum date value in the list.", 
+        py::arg("values"));
+
+    m.def("max_element", &py_max_element<int>, "Returns the maximum integer value in the list.", 
+        py::arg("values"));
+    m.def("max_element", &py_max_element<float>, "Returns the maximum float value in the list.", 
+        py::arg("values"));
+    m.def("max_element", &py_max_element<string>, "Returns the maximum string value in the list.", 
+        py::arg("values"));
+    m.def("max_element", &py_max_element<system_clock::time_point>, "Returns the maximum date value in the list.", 
+        py::arg("values"));
+
+    m.def("transform_square", &py_transform_square<int>, "Returns a list with each integer squared.", 
+        py::arg("values"));
+    m.def("transform_square", &py_transform_square<float>, "Returns a list with each float squared.", 
+        py::arg("values"));
+    m.def("transform_abs", &py_transform_abs<int>, "Returns a list with absolute value of each integer.", 
+        py::arg("values"));
+    m.def("transform_abs", &py_transform_abs<float>, "Returns a list with absolute value of each float.", 
+        py::arg("values"));
+    m.def("transform_sqrt", &py_transform_sqrt, "Returns a list with square root of each float.", 
+        py::arg("values"));
+    m.def("transform_toupper", &py_transform_toupper, "Returns a list with each string converted to uppercase.", 
+        py::arg("values"));
+    m.def("transform_tolower", &py_transform_tolower, "Returns a list with each string converted to lowercase.", 
+        py::arg("values"));
+
+    m.def("unique", &py_unique<int>, "Returns a list with adjacent duplicate integers removed.", 
+        py::arg("values"));
+    m.def("unique", &py_unique<float>, "Returns a list with adjacent duplicate floats removed.", 
+        py::arg("values"));
+    m.def("unique", &py_unique<string>, "Returns a list with adjacent duplicate strings removed.", 
+        py::arg("values"));
+    m.def("unique", &py_unique<system_clock::time_point>, "Returns a list with adjacent duplicate dates removed.", 
+        py::arg("values"));
+
+    m.def("binary_search", &py_binary_search<int>, "Returns true if the integer value is found in the sorted list.", 
+        py::arg("values"), py::arg("value"));
+    m.def("binary_search", &py_binary_search<float>, "Returns true if the float value is found in the sorted list.", 
+        py::arg("values"), py::arg("value"));
+    m.def("binary_search", &py_binary_search<string>, "Returns true if the string value is found in the sorted list.", 
+        py::arg("values"), py::arg("value"));
+    m.def("binary_search", &py_binary_search<system_clock::time_point>, "Returns true if the date value is found in the sorted list.", 
+        py::arg("values"), py::arg("value"));
+
+    m.def("nth_element", &py_nth_element<int>, "Returns the nth smallest integer element (0-indexed).", 
+        py::arg("values"), py::arg("n"));
+    m.def("nth_element", &py_nth_element<float>, "Returns the nth smallest float element (0-indexed).", 
+        py::arg("values"), py::arg("n"));
+    m.def("nth_element", &py_nth_element<string>, "Returns the nth smallest string element (0-indexed).", 
+        py::arg("values"), py::arg("n"));
+    m.def("nth_element", &py_nth_element<system_clock::time_point>, "Returns the nth smallest date element (0-indexed).", 
+        py::arg("values"), py::arg("n"));
+
+    m.def("set_union", &py_set_union<int>, "Returns the union of two sorted integer lists.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_union", &py_set_union<float>, "Returns the union of two sorted float lists.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_union", &py_set_union<string>, "Returns the union of two sorted string lists.", 
+        py::arg("values1"), py::arg("values2"));
+
+    m.def("set_intersection", &py_set_intersection<int>, "Returns the intersection of two sorted integer lists.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_intersection", &py_set_intersection<float>, "Returns the intersection of two sorted float lists.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_intersection", &py_set_intersection<string>, "Returns the intersection of two sorted string lists.", 
+        py::arg("values1"), py::arg("values2"));
+
+    m.def("set_difference", &py_set_difference<int>, "Returns the difference of two sorted integer lists (elements in first but not second).", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_difference", &py_set_difference<float>, "Returns the difference of two sorted float lists (elements in first but not second).", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("set_difference", &py_set_difference<string>, "Returns the difference of two sorted string lists (elements in first but not second).", 
+        py::arg("values1"), py::arg("values2"));
+
+    m.def("includes", &py_includes<int>, "Returns true if the first sorted integer list includes all elements of the second.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("includes", &py_includes<float>, "Returns true if the first sorted float list includes all elements of the second.", 
+        py::arg("values1"), py::arg("values2"));
+    m.def("includes", &py_includes<string>, "Returns true if the first sorted string list includes all elements of the second.", 
+        py::arg("values1"), py::arg("values2"));
+
+    m.def("partition_less_than", &py_partition_less_than<int>, "Returns a list partitioned so elements less than threshold come first.", 
+        py::arg("values"), py::arg("threshold"));
+    m.def("partition_less_than", &py_partition_less_than<float>, "Returns a list partitioned so elements less than threshold come first.", 
+        py::arg("values"), py::arg("threshold"));
+    m.def("partition_less_than", &py_partition_less_than<string>, "Returns a list partitioned so elements less than threshold come first.", 
+        py::arg("values"), py::arg("threshold"));
+
+    m.def("rotate_left", &py_rotate_left<int>, "Returns a list rotated left by the specified number of positions.", 
+        py::arg("values"), py::arg("positions"));
+    m.def("rotate_left", &py_rotate_left<float>, "Returns a list rotated left by the specified number of positions.", 
+        py::arg("values"), py::arg("positions"));
+    m.def("rotate_left", &py_rotate_left<string>, "Returns a list rotated left by the specified number of positions.", 
+        py::arg("values"), py::arg("positions"));
 
     m.def("read_tuples", &py_read_tuples, "Reads tuples into a row structure.",
         py::arg("tuples"));
